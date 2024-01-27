@@ -20,8 +20,9 @@ def main():
   print("Please enter the length (in bars) for your song: ")
   length = int(input())
   songkey = genkey()
+  songprogression = genchords(songkey, length)
   for barnum in range(0, length):
-    addbar(songkey, filename + ".data", (samplerate * 60) / (bpm * (tsden / 4)), tsnum, samplerate)
+    addbar(songprogression[barnum], filename + ".data", (samplerate * 60) / (bpm * (tsden / 4)), tsnum, samplerate)
   datasize = os.path.getsize(filename + ".data")
   wavheader(filename, datasize, samplerate, 8)
   datafile = open(filename + ".data", "rb")
@@ -33,9 +34,8 @@ def main():
     outfile.write(line)
   outfile.close()
 
-def addbar(key, filename, notelength, notenum, samplerate):
+def addbar(chord, filename, notelength, notenum, samplerate):
   datafile = open(filename, "ab")
-  chord = genchord(key)
   for beatnum in range(0, notenum):
     melody = genmelody(chord)
     for address in range(0, int(notelength)):
@@ -62,17 +62,17 @@ def wavheader(file, datalength, samplerate, bitspersample):
 def genkey():
   return notes.names[int(random.random() * len(notes.names))]
 
-def genchord(key):
-  scale = notes.majscale(key)
-  rand = int(random.random() * 10)
-  if rand < 3:
-    chordkey = 4
-  elif rand < 6:
-    chordkey = 3
-  else:
-    chordkey = 0
-  chord = notes.chord(scale[chordkey] + "3")
-  return chord
+def genchords(key, bars):
+  progressionfile = open("progressions.txt", "r")
+  progressions = progressionfile.readlines()
+  progressionfile.close()
+  progression = progressions[int(random.random() * len(progressions))]
+  progression = progression.split();
+  scale = notes.scale(key)
+  chords = []
+  for barnum in range(0, bars):
+    chords.append(notes.romanchord(progression[barnum % len(progression)], key))
+  return chords
 
 def genmelody(chord):
   return notes.removeoctave(chord[int(random.random() * len(chord))]) + str(4 + int(random.random() * 2))

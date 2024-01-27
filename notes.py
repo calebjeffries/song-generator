@@ -227,11 +227,72 @@ def tofreq(name):
     raise Exception("Invalid note name")
   return freq
 
-def majscale(note):
+def scale(note, scaletype = "maj"):
   notenames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#"]
   noteindex = notenames.index(note)
-  scalenotes = [notenames[noteindex], notenames[noteindex + 2], notenames[noteindex + 4], notenames[noteindex + 5], notenames[noteindex + 7], notenames[noteindex + 9], notenames[noteindex + 11]]
+  if scaletype == "min":
+    scalenotes = [notenames[noteindex], notenames[noteindex + 2], notenames[noteindex + 3], notenames[noteindex + 5], notenames[noteindex + 7], notenames[noteindex + 8], notenames[noteindex + 11]]
+  else:
+    scalenotes = [notenames[noteindex], notenames[noteindex + 2], notenames[noteindex + 4], notenames[noteindex + 5], notenames[noteindex + 7], notenames[noteindex + 9], notenames[noteindex + 11]]
   return scalenotes
+
+def romanchord(symbol, key):
+  chordscale = scale(key)
+  chordname = re.sub("(dim)?[^viVI]*$", "", symbol)
+  chordtype = re.sub("^[ivIV]+", "", symbol);
+  match chordname:
+    case "I":
+      chordroot = chordscale[0]
+      chordquality = "maj"
+    case "II":
+      chordroot = chordscale[1]
+      chordquality = "maj"
+    case "III":
+      chordroot = chordscale[2]
+      chordquality = "maj"
+    case "IV":
+      chordroot = chordscale[3]
+      chordquality = "maj"
+    case "V":
+      chordroot = chordscale[4]
+      chordquality = "maj"
+    case "VI":
+      chordroot = chordscale[5]
+      chordquality = "maj"
+    case "VII":
+      chordroot = chordscale[6]
+      chordquality = "maj"
+    case "i":
+      chordroot = chordscale[0]
+      chordquality = "min"
+    case "ii":
+      chordroot = chordscale[1]
+      chordquality = "min"
+    case "iii":
+      chordroot = chordscale[2]
+      chordquality = "min"
+    case "iv":
+      chordroot = chordscale[3]
+      chordquality = "min"
+    case "v":
+      chordroot = chordscale[4]
+      chordquality = "min"
+    case "vi":
+      chordroot = chordscale[5]
+      chordquality = "min"
+    case "vii":
+      chordroot = chordscale[6]
+      chordquality = "min"
+    case _:
+      raise Exception("Invalid roman numeral")
+  if chordquality == "min":
+    match chordtype:
+      case "7":
+        chordtype = "min7"
+      case "":
+        chordtype = "m"
+  return chord(chordroot + "3", chordtype)
+
 
 def chord(note, chordtype=""):
   index = notes.index(note)

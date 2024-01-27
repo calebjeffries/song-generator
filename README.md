@@ -8,7 +8,6 @@ A random song generator
 
 ## About the music
 - The key is randomly generated
-- It randomly chooses the I IV or V chord every bar
+- It uses a randomly selected chord progression from `progressions.txt`
 - It will generate a random melody with only the notes of the chords
 - The melody has no rests or variation in the rhythm
-- The song never repeats any generated part
