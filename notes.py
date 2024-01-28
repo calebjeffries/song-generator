@@ -239,7 +239,7 @@ def scale(note, scaletype = "maj"):
 def romanchord(symbol, key):
   chordscale = scale(key)
   chordname = re.sub("(dim)?[^viVI]*$", "", symbol)
-  chordtype = re.sub("^[ivIV]+", "", symbol);
+  chordtype = re.sub("^[ivIV]+", "", symbol)
   match chordname:
     case "I":
       chordroot = chordscale[0]
