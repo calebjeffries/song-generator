@@ -1,10 +1,10 @@
-I IV V I
-I vi IV I
-I V VI# IV
-I III IV V
-I III vi V
-I VI ii V
-I ii V I
-I IV vi V
-I V IV I
-I iii vi V
+I IV V I:67 0 22 0
+I II V I:67 0 11 0
+I III7 vi V7:22 44 11 11
+I V vi IV:11 22 56 11
+I V VI# IV:22 11 44 0
+I VI7 ii V:44 11 22 0
+IV iii ii I:44 22 33 0
+i VI# V# V:11 33 22 0
+i iv v i:0 44 11 22
+i II# VI# i:22 33 11 0

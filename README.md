@@ -19,3 +19,6 @@ A random song generator
 - `-t`, `--tempo`: specify tempo (default 120bpm)
 - `-l`, `--length`: specify length in bars (default 32)
 - `-T`, `--time-signature`: specify time signature (otherwise, it is randomly chosen)
+- `-H`, `--happiness`: the happiness of your song from -100 (sad) to 100
+- `-c`, `--calmness`: the calmness of your song from -100 (angry) to 100
+- `-m`, `--match-percent`: the amount of tolerance for emotion picking

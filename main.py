@@ -69,14 +69,20 @@ def genchords(key, bars):
   progressionfile = open("progressions.txt", "r")
   progressions = progressionfile.readlines()
   progressionfile.close()
-  progression = progressions[int(random.random() * len(progressions))]
-  verboseinfo("chord progression: " + progression)
-  progression = progression.split()
-  scale = notes.scale(key)
-  chords = []
-  for barnum in range(0, bars):
-    chords.append(notes.romanchord(progression[barnum % len(progression)], key))
-  return chords
+  while (True):
+    progressionline = progressions[int(random.random() * len(progressions))]
+    progression = progressionline.split(":")[0]
+    emotion = progressionline.split(":")[1]
+    emotion = emotion.split()
+    emotions = [int(emotion[0]) - int(emotion[1]), int(emotion[2]) - int(emotion[3])]
+    if (emotions[0] < args.happiness + args.match_percent * 2 and emotions[0] > args.happiness - args.match_percent * 2 and emotions[1] < args.calmness + args.match_percent * 2 and emotions[1] > args.calmness - args.match_percent * 2):
+      verboseinfo("chord progression: " + progression)
+      progression = progression.split()
+      scale = notes.scale(key)
+      chords = []
+      for barnum in range(0, bars):
+        chords.append(notes.romanchord(progression[barnum % len(progression)], key))
+      return chords
 
 def genmelody(chord):
   return notes.removeoctave(chord[int(random.random() * len(chord))]) + str(4 + int(random.random() * 2))
@@ -92,6 +98,9 @@ def sine(freq, addr, vol, samplerate):
 
 argparser = argparse.ArgumentParser(description = "Generate some music")
 argparser.add_argument("file", type=str, help="File to write to")
+argparser.add_argument("-H", "--happiness", type=int, action="store", default=0, help="The happiness of your song, from -100 to 100")
+argparser.add_argument("-c", "--calmness", type=int, action="store", default=0, help="The calmness of your song, from -100 to 100")
+argparser.add_argument("-m", "--match-percent", type=int, action="store", default=25, help="The match percent tolerence, don't set too low!")
 argparser.add_argument("-v", "--verbose", default=False, action="store_true", help="Print extra information")
 argparser.add_argument("-s", "--samplerate", default=48000, type=int, action="store", help="The number of samples per second in the output file")
 argparser.add_argument("-t", "--tempo", default=120, type=int, action="store", help="The tempo (in beats per minute) for your song")
