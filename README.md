@@ -22,3 +22,4 @@ A random song generator
 - `-H`, `--happiness`: the happiness of your song from -100 (sad) to 100
 - `-c`, `--calmness`: the calmness of your song from -100 (angry) to 100
 - `-m`, `--match-percent`: the amount of tolerance for emotion picking
+- `--harmonics`: the number of harmonics for each note (setting this too high will be very slow)

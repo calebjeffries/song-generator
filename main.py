@@ -75,7 +75,7 @@ def genchords(key, bars):
     emotion = progressionline.split(":")[1]
     emotion = emotion.split()
     emotions = [int(emotion[0]) - int(emotion[1]), int(emotion[2]) - int(emotion[3])]
-    if (emotions[0] < args.happiness + args.match_percent * 2 and emotions[0] > args.happiness - args.match_percent * 2 and emotions[1] < args.calmness + args.match_percent * 2 and emotions[1] > args.calmness - args.match_percent * 2):
+    if emotions[0] < args.happiness + args.match_percent * 2 and emotions[0] > args.happiness - args.match_percent * 2 and emotions[1] < args.calmness + args.match_percent * 2 and emotions[1] > args.calmness - args.match_percent * 2:
       verboseinfo("chord progression: " + progression)
       progression = progression.split()
       scale = notes.scale(key)
@@ -90,7 +90,8 @@ def genmelody(chord):
 def chordwaves(chord, addr, vol, samplerate):
   amplitude = 127
   for i in range(0, len(chord)):
-    amplitude += sine(notes.tofreq(chord[i]), addr, vol, samplerate)
+    for harmonicnum in range(1, args.harmonics):
+      amplitude += sine(notes.tofreq(chord[i]) * harmonicnum, addr, vol / harmonicnum, samplerate)
   return amplitude
 
 def sine(freq, addr, vol, samplerate):
@@ -105,6 +106,7 @@ argparser.add_argument("-v", "--verbose", default=False, action="store_true", he
 argparser.add_argument("-s", "--samplerate", default=48000, type=int, action="store", help="The number of samples per second in the output file")
 argparser.add_argument("-t", "--tempo", default=120, type=int, action="store", help="The tempo (in beats per minute) for your song")
 argparser.add_argument("-l", "--length", default=32, type=int, action="store", help="The number of bars for your song")
+argparser.add_argument("--harmonics", default=5, type=int, action="store", help="The number of harmonics in your song, higher will make it sound better, but take longer")
 argparser.add_argument("-T", "--time-signature", type=str, action="store", default=gentimesig(), help="The time signature for your song (e.g. '4/4')")
 args = argparser.parse_args()
 
