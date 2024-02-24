@@ -38,12 +38,12 @@ def addbar(chord, filename, notelength, notenum, samplerate):
   for beatnum in range(0, notenum):
     melody = genmelody(chord)
     for address in range(0, int(notelength)):
-      output = chordwaves(chord, address, 20, samplerate) + sine(notes.tofreq(melody), address, 20, samplerate)
+      output = chordwaves(chord, address, 15 * (args.volume / 100), samplerate) + sine(notes.tofreq(melody), address, 20 * (args.volume / 100), samplerate, args.harmonics)
       if output > 255:
         output = 255
       elif output < 0:
         output = 0
-      datafile.write(struct.pack("@B", output))
+      datafile.write(struct.pack("@B", int(output)))
   datafile.close()
 
 def wavheader(file, datalength, samplerate, bitspersample):
@@ -94,13 +94,14 @@ def genmelody(chord):
 def chordwaves(chord, addr, vol, samplerate):
   amplitude = 127
   for i in range(0, len(chord)):
-    for harmonicnum in range(1, args.harmonics):
-      amplitude += sine(notes.tofreq(chord[i]) * harmonicnum, addr, vol / harmonicnum, samplerate)
-  amplitude *= (args.volume / 100)
-  return int(amplitude)
+    amplitude += sine(notes.tofreq(chord[i]), addr, vol, samplerate, args.harmonics)
+  return amplitude
 
-def sine(freq, addr, vol, samplerate):
-  return int(math.sin(addr / ((samplerate / (math.pi * 2)) / freq)) * vol)
+def sine(freq, addr, vol, samplerate, harmonics):
+  amplitude = 0
+  for harmonicnum in range(1, args.harmonics):
+    amplitude += math.sin(addr / ((samplerate / (math.pi * 2)) / (freq * harmonicnum))) * (vol / harmonicnum)
+  return amplitude
 
 argparser = argparse.ArgumentParser(description = "Generate some music")
 argparser.add_argument("file", type=str, help="File to write to")
