@@ -4,7 +4,7 @@ A random song generator
 ## Format
 - The program generates WAVE (.wav) audio
 - The sample rate is cusomizable
-- It is limited to 8 bits per sample (for now)
+- It generates music with signed short integer samples
 
 ## About the music
 - The key is randomly generated

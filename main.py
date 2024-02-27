@@ -19,7 +19,7 @@ def main():
   for barnum in range(0, args.length):
     addbar(songprogression[barnum], args.file + ".data", (args.samplerate * 60) / (args.tempo * (int(ts[1]) / 4)), int(ts[0]), args.samplerate)
   datasize = os.path.getsize(args.file + ".data")
-  wavheader(args.file, datasize, args.samplerate, 8)
+  wavheader(args.file, datasize, args.samplerate, 16)
   datafile = open(args.file + ".data", "rb")
   data = datafile.readlines()
   datafile.close()
@@ -39,11 +39,11 @@ def addbar(chord, filename, notelength, notenum, samplerate):
     melody = genmelody(chord)
     for address in range(0, int(notelength)):
       output = chordwaves(chord, address, 15 * (args.volume / 100), samplerate) + sine(notes.tofreq(melody), address, 20 * (args.volume / 100), samplerate, args.harmonics)
-      if output > 255:
-        output = 255
-      elif output < 0:
-        output = 0
-      datafile.write(struct.pack("@B", int(output)))
+      if output > 32767:
+        output = 32767
+      elif output < -32767:
+        output = -32767
+      datafile.write(struct.pack("@h", int(output)))
   datafile.close()
 
 def wavheader(file, datalength, samplerate, bitspersample):
@@ -92,15 +92,15 @@ def genmelody(chord):
   return notes.removeoctave(chord[int(random.random() * len(chord))]) + str(4 + int(random.random() * 2))
 
 def chordwaves(chord, addr, vol, samplerate):
-  amplitude = 127
+  amplitude = 0
   for i in range(0, len(chord)):
     amplitude += sine(notes.tofreq(chord[i]), addr, vol, samplerate, args.harmonics)
   return amplitude
 
 def sine(freq, addr, vol, samplerate, harmonics):
   amplitude = 0
-  for harmonicnum in range(1, args.harmonics):
-    amplitude += math.sin(addr / ((samplerate / (math.pi * 2)) / (freq * harmonicnum))) * (vol / harmonicnum)
+  for harmonicnum in range(1, args.harmonics + 1):
+    amplitude += math.sin(addr / ((samplerate / (math.pi * 2)) / (freq * harmonicnum))) * ((vol * 255) / harmonicnum)
   return amplitude
 
 argparser = argparse.ArgumentParser(description = "Generate some music")
@@ -118,3 +118,4 @@ argparser.add_argument("-T", "--time-signature", type=str, action="store", defau
 args = argparser.parse_args()
 
 main()
+
