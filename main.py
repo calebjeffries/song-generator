@@ -6,6 +6,7 @@ import math
 import random
 import argparse
 import notes
+import instruments
 
 def main():
   ts = args.time_signature.split("/")
@@ -33,19 +34,6 @@ def verboseinfo(msg):
   if args.verbose == True:
     print(msg)
 
-def addbar(chord, filename, notelength, notenum, samplerate):
-  datafile = open(filename, "ab")
-  for beatnum in range(0, notenum):
-    melody = genmelody(chord)
-    for address in range(0, int(notelength)):
-      output = chordwaves(chord, address, 15 * (args.volume / 100), samplerate) + sine(notes.tofreq(melody), address, 20 * (args.volume / 100), samplerate, args.harmonics)
-      if output > 32767:
-        output = 32767
-      elif output < -32767:
-        output = -32767
-      datafile.write(struct.pack("@h", int(output)))
-  datafile.close()
-
 def wavheader(file, datalength, samplerate, bitspersample):
   outfile = open(file, "wb")
   outfile.write(b'RIFF')
@@ -61,6 +49,13 @@ def wavheader(file, datalength, samplerate, bitspersample):
   outfile.write(b'data')
   outfile.write(struct.pack("<I", datalength))
   outfile.close()
+
+def addbar(chord, filename, notelength, notenum, samplerate):
+  datafile = open(filename, "ab")
+  for beatnum in range(0, notenum):
+    melody = genmelody(chord)
+    instruments.gennote(chord, "instruments/" + args.instrument + ".toml", melody, args.volume, notelength, samplerate, datafile)
+  datafile.close()
 
 def gentimesig():
   commontimesigs = ["2/2", "2/4", "3/4", "4/4", "5/4", "7/4", "6/8", "9/8", "12/8"]
@@ -91,18 +86,6 @@ def genchords(key, bars):
 def genmelody(chord):
   return notes.removeoctave(chord[int(random.random() * len(chord))]) + str(4 + int(random.random() * 2))
 
-def chordwaves(chord, addr, vol, samplerate):
-  amplitude = 0
-  for i in range(0, len(chord)):
-    amplitude += sine(notes.tofreq(chord[i]), addr, vol, samplerate, args.harmonics)
-  return amplitude
-
-def sine(freq, addr, vol, samplerate, harmonics):
-  amplitude = 0
-  for harmonicnum in range(1, args.harmonics + 1):
-    amplitude += math.sin(addr / ((samplerate / (math.pi * 2)) / (freq * harmonicnum))) * ((vol * 255) / harmonicnum)
-  return amplitude
-
 argparser = argparse.ArgumentParser(description = "Generate some music")
 argparser.add_argument("file", type=str, help="File to write to")
 argparser.add_argument("-H", "--happiness", type=int, action="store", default=0, help="The happiness of your song, from -100 to 100")
@@ -113,7 +96,7 @@ argparser.add_argument("-s", "--samplerate", default=48000, type=int, action="st
 argparser.add_argument("-V", "--volume", default=100, type=int, action="store", help="The volume of your song (setting this too high causes distortion)")
 argparser.add_argument("-t", "--tempo", default=120, type=int, action="store", help="The tempo (in beats per minute) for your song")
 argparser.add_argument("-l", "--length", default=32, type=int, action="store", help="The number of bars for your song")
-argparser.add_argument("--harmonics", default=5, type=int, action="store", help="The number of harmonics in your song, higher will make it sound better, but take longer")
+argparser.add_argument("-i", "--instrument", type=str, action="store", default="piano", help="The instrument used in your song")
 argparser.add_argument("-T", "--time-signature", type=str, action="store", default=gentimesig(), help="The time signature for your song (e.g. '4/4')")
 args = argparser.parse_args()
 

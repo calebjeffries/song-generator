@@ -1,0 +1,3 @@
+harmonicnum = 10
+harmonics = [ 100, 75, 9, 8, 8, 13, 19, 12, 1, 6 ]
+envelope = [ 5, 100, 75, 200 ]

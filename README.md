@@ -13,7 +13,7 @@ A random song generator
 - The melody has no rests or variation in the rhythm
 
 ## Usage
-./main.py [-v] [-s samplerate] [-t tempo] [-l length] [-T time-signature] file
+./main.py [-v] [-s samplerate] [-t tempo] [-l length] [-T time-signature] [-H happiness] [-c calmness] [-m match_percent] [-i instrument] file
 - `-v`, `--verbose`: run in verbose mode
 - `-s`, `--samplerate`: specify samplerate (default 48000Hz)
 - `-t`, `--tempo`: specify tempo (default 120bpm)
@@ -22,4 +22,4 @@ A random song generator
 - `-H`, `--happiness`: the happiness of your song from -100 (sad) to 100
 - `-c`, `--calmness`: the calmness of your song from -100 (angry) to 100
 - `-m`, `--match-percent`: the amount of tolerance for emotion picking
-- `--harmonics`: the number of harmonics for each note (setting this too high will be very slow)
+- `-i`, `--instrument`: the instrument file you will be using (e.g. "piano" for piano.toml)
