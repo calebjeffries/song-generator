@@ -1,8 +1,6 @@
 #!/bin/python3
 
-import os
 import struct
-import math
 import random
 import argparse
 import notes
@@ -21,16 +19,12 @@ def main():
   for barnum in range(0, args.length):
     for i in range(0, int(ts[0])):
       songmelody.append(genmelody(songprogression[barnum]))
-  instruments.gensong(args.length, args.file, args.samplerate, args.tempo, args.instrument, args.volume, ts, songprogression, songmelody)
-  datasize = os.path.getsize(args.file + ".data")
-  wavheader(args.file, datasize, args.samplerate, 16)
-  datafile = open(args.file + ".data", "rb")
-  data = datafile.readlines()
-  datafile.close()
-  os.remove(args.file + ".data")
+  wavdata = instruments.gensong(args.length, args.file, args.samplerate, args.tempo, args.instrument, args.volume, ts, songprogression, songmelody)
+  datasize = len(wavdata)
+  wavheader(args.file, len(wavdata), args.samplerate, 16)
   outfile = open(args.file, "ab")
-  for line in data:
-    outfile.write(line)
+  for sample in wavdata:
+    outfile.write(struct.pack("@h", sample))
   outfile.close()
 
 def verboseinfo(msg):

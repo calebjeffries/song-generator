@@ -22,14 +22,12 @@ def gensong(length, filename, samplerate, tempo, instrument, volume, ts, progres
     for beatnum in range(0, int(ts[0])):
       address = barnum * int(ts[0]) + beatnum
       gennote(progression[barnum], instrumentharmonics, instrumentenvelope, melody[address], volume, (samplerate * 60) / (tempo * (int(ts[1]) / 4)), samplerate, address)
-  datafile = open(filename + ".data", "wb")
   for i in range(0, len(outarray)):
     if outarray[i] > 32767:
       outarray[i] = 32767
     elif outarray[i] < -32767:
       outarray[i] = -32767
-    datafile.write(struct.pack("@h", int(outarray[i])))
-  datafile.close()
+  return outarray
 
 # Add a note to the data file
 def gennote(chord, harmonics, envelope, melody, vol, notelength, samplerate, addr):
