@@ -5,7 +5,6 @@ import struct
 import math
 import random
 import argparse
-import tqdm
 import notes
 import instruments
 
@@ -18,8 +17,11 @@ def main():
   verboseinfo("number of bars: " + str(args.length))
   verboseinfo("samplerate: " + str(args.samplerate))
   songprogression = genchords(songkey, args.length)
-  for barnum in tqdm.tqdm(range(0, args.length)):
-    addbar(songprogression[barnum], args.file + ".data", (args.samplerate * 60) / (args.tempo * (int(ts[1]) / 4)), int(ts[0]), args.samplerate)
+  songmelody = [];
+  for barnum in range(0, args.length):
+    for i in range(0, int(ts[0])):
+      songmelody.append(genmelody(songprogression[barnum]))
+  instruments.gensong(args.length, args.file, args.samplerate, args.tempo, args.instrument, args.volume, ts, songprogression, songmelody)
   datasize = os.path.getsize(args.file + ".data")
   wavheader(args.file, datasize, args.samplerate, 16)
   datafile = open(args.file + ".data", "rb")
@@ -50,13 +52,6 @@ def wavheader(file, datalength, samplerate, bitspersample):
   outfile.write(b'data')
   outfile.write(struct.pack("<I", datalength))
   outfile.close()
-
-def addbar(chord, filename, notelength, notenum, samplerate):
-  datafile = open(filename, "ab")
-  for beatnum in range(0, notenum):
-    melody = genmelody(chord)
-    instruments.gennote(chord, "instruments/" + args.instrument + ".toml", melody, args.volume, notelength, samplerate, datafile)
-  datafile.close()
 
 def gentimesig():
   commontimesigs = ["2/2", "2/4", "3/4", "4/4", "5/4", "7/4", "6/8", "9/8", "12/8"]
