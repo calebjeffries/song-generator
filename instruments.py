@@ -53,6 +53,6 @@ def chordwaves(chord, addr, vol, samplerate, notelength, instrumentharmonics):
 # Generate waves for a certain instrument
 def instrumentwave(freq, addr, vol, samplerate, notelength, instrumentharmonics):
   amplitude = 0
-  for harmonicnum in range(1, len(instrumentharmonics)):
-    amplitude += math.sin(addr / (srover2pi / (freq * harmonicnum))) * ((vol * 255) * (instrumentharmonics[harmonicnum] / 100))
+  for harmonicnum in range(1, len(instrumentharmonics) + 1):
+    amplitude += math.sin(addr / (srover2pi / (freq * harmonicnum))) * ((vol * 255) * (instrumentharmonics[harmonicnum - 1] / 100))
   return amplitude

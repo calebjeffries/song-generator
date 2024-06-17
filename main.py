@@ -20,8 +20,7 @@ def main():
     for i in range(0, int(ts[0])):
       songmelody.append(genmelody(songprogression[barnum]))
   wavdata = instruments.gensong(args.length, args.file, args.samplerate, args.tempo, args.instrument, args.volume, ts, songprogression, songmelody)
-  datasize = len(wavdata)
-  wavheader(args.file, len(wavdata), args.samplerate, 16)
+  wavheader(args.file, len(wavdata) * 2, args.samplerate, 16)
   outfile = open(args.file, "ab")
   for sample in wavdata:
     outfile.write(struct.pack("@h", sample))
