@@ -8,13 +8,12 @@ import instruments
 
 def main():
   ts = args.time_signature.split("/")
-  songkey = genkey()
-  verboseinfo("key: " + songkey)
+  verboseinfo("key: " + args.key)
   verboseinfo("time signature: " + args.time_signature)
   verboseinfo("tempo: " + str(args.tempo) + "bpm")
   verboseinfo("number of bars: " + str(args.length))
   verboseinfo("samplerate: " + str(args.samplerate))
-  songprogression = genchords(songkey, args.length)
+  songprogression = genchords(args.key, args.length)
   songmelody = [];
   for barnum in range(0, args.length):
     for i in range(0, int(ts[0])):
@@ -87,6 +86,7 @@ argparser.add_argument("-t", "--tempo", default=120, type=int, action="store", h
 argparser.add_argument("-l", "--length", default=32, type=int, action="store", help="The number of bars for your song")
 argparser.add_argument("-i", "--instrument", type=str, action="store", default="piano", help="The instrument used in your song")
 argparser.add_argument("-T", "--time-signature", type=str, action="store", default=gentimesig(), help="The time signature for your song (e.g. '4/4')")
+argparser.add_argument("-k", "--key", type=str, action="store", default=genkey(), help="The key for your song")
 args = argparser.parse_args()
 
 main()

@@ -23,3 +23,4 @@ A random song generator
 - `-c`, `--calmness`: the calmness of your song from -100 (angry) to 100
 - `-m`, `--match-percent`: the amount of tolerance for emotion picking
 - `-i`, `--instrument`: the instrument file you will be using (e.g. "piano" for piano.toml)
+- `-k`, `--key`: the key for your song (using only sharps and naturals; no flats)
