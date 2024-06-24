@@ -243,9 +243,8 @@ def scale(note, scaletype = "maj"):
 # Convert a chord written in roman numerals to a list of notes
 def romanchord(symbol, key):
   chordscale = scale(key)
-  # the roman numeral
-  chordname = re.sub("(dim)?[^viVI]*$", "", symbol)	# The roman numeral
-  chordtype = re.sub("^[ivIV]+", "", symbol)		# The extention
+  chordname = re.sub("[b#]?(dim)?[^viVI]*$", "", symbol)    # The roman numeral
+  chordtype = re.sub("^[ivIV]+", "", symbol)                # The extention
   match chordname:
     case "I":
       chordroot = chordscale[0]
@@ -300,14 +299,24 @@ def romanchord(symbol, key):
   return chord(chordroot + "3", chordtype)
 
 # Convert a note into a list of notes, making a chord
-def chord(note, chordtype=""):
+def chord(note, chordextension=""):
   index = notes.index(note)
+  accidental = re.sub("[^#b]*$", "", chordextension)
+  chordtype = re.sub("^[#b]*", "", chordextension)
+  if accidental == "#":
+    note = notes[index + 1]
+    index += 1
+  elif accidental == "b":
+    note = notes[index - 1]
+    index -= 1
+  elif accidental == "##":
+    note = notes[index + 2]
+    index += 2
+  elif accidental == "bb":
+    note = notes[index - 2]
+    index -= 2
   if chordtype == "m":
     notenames = [note, notes[index + 3], notes[index + 7]]
-  elif chordtype == "#":
-    notenames = [notes[index + 1], notes[index + 5], notes[index + 8]]
-  elif chordtype == "b":
-    notenames = [notes[index - 1], notes[index + 3], notes[index + 6]]
   elif chordtype == "dim":
     notenames = [note, notes[index + 3], notes[index + 6]]
   elif chordtype == "aug":
@@ -316,6 +325,12 @@ def chord(note, chordtype=""):
     notenames = [note, notes[index + 5], notes[index + 7]]
   elif chordtype == "7":
     notenames = [note, notes[index + 4], notes[index + 7], notes[index + 10]]
+  elif chordtype == "min7":
+    notenames = [note, notes[index + 3], notes[index + 7], notes[index + 10]]
+  elif chordtype == "maj7":
+    notenames = [note, notes[index + 4], notes[index + 7], notes[index + 11]]
+  elif chordtype == "dim7":
+    notenames = [note, notes[index + 3], notes[index + 6], notes[index + 9]]
   else:
     notenames = [note, notes[index + 4], notes[index + 7]]
   return notenames
