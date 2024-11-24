@@ -18,7 +18,7 @@ def main():
   for barnum in range(0, args.length):
     for i in range(0, int(ts[0])):
       songmelody.append(genmelody(songprogression[barnum]))
-  wavdata = instruments.gensong(args.length, args.file, args.samplerate, args.tempo, args.instrument, args.volume, ts, songprogression, songmelody)
+  wavdata = instruments.gensong(args.length, args.samplerate, args.tempo, args.instrument, args.volume, ts, songprogression, songmelody)
   wavheader(args.file, len(wavdata) * 2, args.samplerate, 16)
   outfile = open(args.file, "ab")
   for sample in wavdata:
@@ -65,7 +65,6 @@ def genchords(key, bars):
     if emotions[0] < args.happiness + args.match_percent * 2 and emotions[0] > args.happiness - args.match_percent * 2 and emotions[1] < args.calmness + args.match_percent * 2 and emotions[1] > args.calmness - args.match_percent * 2:
       verboseinfo("chord progression: " + progression)
       progression = progression.split()
-      scale = notes.scale(key)
       chords = []
       for barnum in range(0, bars):
         chords.append(notes.romanchord(progression[barnum % len(progression)], key))
@@ -90,4 +89,3 @@ argparser.add_argument("-k", "--key", type=str, action="store", default=genkey()
 args = argparser.parse_args()
 
 main()
-
