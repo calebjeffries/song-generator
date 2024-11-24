@@ -31,27 +31,27 @@ def gensong(length, samplerate, tempo, instrument, volume, ts, progression, melo
 # Add a note to the data file
 def gennote(chord, harmonics, envelope, melody, vol, notelength, addr):
   # Attack
-  volumecalculationconst1 = 1 / (envelope[0] * srms * vol) # Makes calculation easier
+  volumecalculationconst1 = vol / (envelope[0] * srms) # Makes calculation easier
   for address in range(0, int(envelope[0] * srms)):
     volume = address * volumecalculationconst1
     output = chordwaves(chord, address, 15 * (volume / 100), harmonics) + instrumentwave(notes.tofreq(melody), address, 20 * (volume / 100), harmonics)
     outarray[int(addr * notelength + address)] += int(output)
   # Decay
   volumecalculationconst1 = (100 - envelope[2]) * vol / (envelope[1] * srms * 100)
-  for address in range(int(envelope[0]), int(envelope[0] + envelope[1] * srms)):
+  for address in range(int(envelope[0] * srms), int((envelope[0] + envelope[1]) * srms)):
     volume = vol - volumecalculationconst1 * (address - envelope[0] * srms)
     output = chordwaves(chord, address, 15 * (volume / 100), harmonics) + instrumentwave(notes.tofreq(melody), address, 20 * (volume / 100), harmonics)
     outarray[int(addr * notelength + address)] += int(output)
   # Sustain
-  volume = (envelope[2] / 100) * vol
-  for address in range(int(envelope[0] + envelope[1]), int(notelength)):
+  volume = envelope[2] * vol / 100
+  for address in range(int((envelope[0] + envelope[1]) * srms), int(notelength)):
     output = chordwaves(chord, address, 15 * (volume / 100), harmonics) + instrumentwave(notes.tofreq(melody), address, 20 * (volume / 100), harmonics)
     outarray[int(addr * notelength + address)] += int(output)
   # Release
   volumecalculationconst1 = envelope[2] * vol / 100
   volumecalculationconst2 = envelope[2] * vol / (envelope[3] * srms * 100)
-  for address in range(int(notelength), int(notelength + envelope[3])):
-    volume = volumecalculationconst1 - (address - notelength) * envelope[2] * volumecalculationconst2
+  for address in range(int(notelength), int(notelength + envelope[3] * srms)):
+    volume = volumecalculationconst1 - (address - notelength) * volumecalculationconst2
     output = chordwaves(chord, address, 15 * (volume / 100), harmonics) + instrumentwave(notes.tofreq(melody), address, 20 * (volume / 100), harmonics)
     outarray[int(addr * notelength + address)] += int(output)
 
